@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="Estilo.css">
+    <title>Temperatura por Ciudad</title>
+  
+</head>
+<body>
+    
+    <main>
+        <h1>Temperatura de una Ciudad</h1>
+        
+        <input type="text" id="ciudadInput" placeholder="Escribe el nombre de la ciudad">
+        <div id="sugerencias"></div>
+        
+        <div id="resultado"></div>
+    </main>
+
+    <script>
+        const input = document.getElementById("ciudadInput");
+        const CajaSug = document.getElementById("sugerencias");
+        const CuadroRes = document.getElementById("resultado");
+        
+        let Tiempo;
+
+        input.addEventListener("input", function() {
+            const ciudad = input.value;
+            clearTimeout(Tiempo);
+            
+            if (ciudad.length < 3) {
+                CajaSug.innerHTML = "";
+                return;
+            }
+            
+            Tiempo = setTimeout(() => {
+                buscarCiudades(ciudad);
+            }, 500);
+        });
+
+        async function buscarCiudades(nombre) {
+            try {
+                const url = `https://geocoding-api.open-meteo.com/v1/search?name=${nombre}&count=5&language=es&format=json`;
+                const respuesta = await fetch(url);
+                const datos = await respuesta.json();
+                mostrarSugerencias(datos.results);
+            } catch (error) {
+                console.error("Error al buscar ciudades:", error);
+                CajaSug.innerHTML = "<p>Error al buscar ciudades</p>";
+            }
+        }
+
+
+        function mostrarSugerencias(ciudades) {
+            CajaSug.innerHTML = "";
+            
+            if (!ciudades || ciudades.length === 0) {
+                CajaSug.innerHTML = "<div class='sugerencia-item'>No se encontraron ciudades</div>";
+                return;
+            }
+            
+            ciudades.forEach(ciudad => {
+                const div = document.createElement("div");
+                
+
+                div.classList.add("sugerencia-item"); 
+                
+                div.textContent = `${ciudad.name}, ${ciudad.country}`;
+                
+                div.addEventListener("click", () => {
+                    input.value = ciudad.name;
+                    CajaSug.innerHTML = "";
+                    obtenerTemperatura(ciudad.latitude, ciudad.longitude, ciudad.name);
+                });
+                
+                CajaSug.appendChild(div);
+            });
+        }
+
+        async function obtenerTemperatura(lat, lon, nombreCiudad) {
+            try {
+                const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`;
+                const respuesta = await fetch(url);
+                const datos = await respuesta.json();
+                
+                const temp = datos.current_weather.temperature;
+                
+                let imagenHTML = '';
+                
+                if (temp <= 5) 
+				{
+                    imagenHTML = '<img src="https://i.postimg.cc/rpZZGR3z/Temsbaj.png" alt="Personas congelandose" width="400">';
+                } else if (temp > 5 && temp <= 15) {
+                    imagenHTML = '<img src="https://i.postimg.cc/xdppGNhQ/Tembaj.png" alt="Personas con saco y bufanda" width="400">';
+                } else if (temp > 15 && temp <= 23) {
+                    imagenHTML = '<img src="https://i.postimg.cc/KYpp73wF/Temnor.png" alt="Personas con ropa casual" width="400">';
+                } else if (temp > 23 && temp <= 28) {
+                    imagenHTML = '<img src="https://i.postimg.cc/xdppGNh2/Temalt.png" alt="Personas con ropa de playa" width="400">';
+                } else { 
+                    imagenHTML = '<img src="https://i.postimg.cc/JhYY3HvW/Temsalta.png" alt="Personas en traje de baño" width="400">';
+                }
+
+                CuadroRes.innerHTML = `
+                    <h2>Temperatura en ${nombreCiudad}</h2>
+                    <p>Temperatura actual: <strong>${temp}°C</strong></p>
+                    ${imagenHTML}
+                `;
+                
+            } catch (error) {
+                console.error("Error al obtener temperatura:", error);
+                CuadroRes.innerHTML = "<p>Error al obtener la temperatura</p>";
+            }
+        }
+    </script>
+</body>
+</html>

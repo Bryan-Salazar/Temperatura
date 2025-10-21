@@ -1,0 +1,105 @@
+
+:root {
+    --color-primario: #007bff;
+    --color-fondo: #f4f7f6;
+    --color-contenedor: #ffffff;
+    --color-texto: #333;
+    --color-borde: #ddd;
+    --sombra: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--color-fondo);
+    color: var(--color-texto);
+    line-height: 1.6;
+}
+
+main {
+    max-width: 500px;
+    margin: 40px auto;
+    padding: 25px;
+    background-color: var(--color-contenedor);
+    border-radius: 8px;
+    box-shadow: var(--sombra);
+}
+
+h1 {
+    text-align: center;
+    color: var(--color-primario);
+    margin-bottom: 25px;
+}
+
+#ciudadInput {
+    width: 100%;
+    padding: 12px 15px;
+    font-size: 16px;
+    border: 2px solid var(--color-borde);
+    border-radius: 5px;
+    transition: border-color 0.3s ease;
+}
+
+#ciudadInput:focus {
+    outline: none;
+    border-color: var(--color-primario);
+}
+
+#sugerencias {
+    margin-top: 5px;
+    border-radius: 5px;
+    overflow: hidden;
+    box-shadow: var(--sombra);
+}
+
+.sugerencia-item {
+    padding: 12px 15px;
+    cursor: pointer;
+    background-color: #fff;
+    border-bottom: 1px solid #f0f0f0;
+    transition: background-color 0.2s ease;
+}
+
+.sugerencia-item:last-child {
+    border-bottom: none;
+}
+
+.sugerencia-item:hover {
+    background-color: #f9f9f9;
+}
+
+#resultado {
+    margin-top: 25px;
+    padding: 20px;
+    background-color: #fdfdfd;
+    border: 1px solid #eef;
+    border-radius: 8px;
+    text-align: center;
+}
+
+#resultado h2 {
+    color: #333;
+    margin-bottom: 10px;
+}
+
+#resultado p {
+    font-size: 1.5rem;
+    font-weight: 500;
+    margin-bottom: 15px;
+}
+
+#resultado p strong {
+    color: var(--color-primario);
+}
+
+.weather-image {
+    width: 150px;
+    height: 150px;
+    object-fit: contain;
+    margin-top: 10px;
+}
